@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Api", "src\Jobber.Auth.Api\Jobber.Auth.Api.csproj", "{D33F56DD-4DBE-424F-9D13-C8D5E0E8CE2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Domain", "src\Jobber.Auth.Domain\Jobber.Auth.Domain.csproj", "{91305644-EE53-4940-9539-CA1F691EEAD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Application", "src\Jobber.Auth.Application\Jobber.Auth.Application.csproj", "{B5C5C1D7-789E-4BEE-96D6-033228CBE40D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Infrastructure", "src\Jobber.Auth.Infrastructure\Jobber.Auth.Infrastructure.csproj", "{03366A60-3AC4-4B00-B7CB-005E188AD6B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D33F56DD-4DBE-424F-9D13-C8D5E0E8CE2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D33F56DD-4DBE-424F-9D13-C8D5E0E8CE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D33F56DD-4DBE-424F-9D13-C8D5E0E8CE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D33F56DD-4DBE-424F-9D13-C8D5E0E8CE2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91305644-EE53-4940-9539-CA1F691EEAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91305644-EE53-4940-9539-CA1F691EEAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91305644-EE53-4940-9539-CA1F691EEAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91305644-EE53-4940-9539-CA1F691EEAD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C5C1D7-789E-4BEE-96D6-033228CBE40D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C5C1D7-789E-4BEE-96D6-033228CBE40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C5C1D7-789E-4BEE-96D6-033228CBE40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C5C1D7-789E-4BEE-96D6-033228CBE40D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
