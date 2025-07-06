@@ -11,7 +11,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, 
         IConfiguration configuration)
     {
-        var thisAssembly = Assembly.GetExecutingAssembly();
+        // var thisAssembly = Assembly.GetExecutingAssembly();
+        services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddScoped<IAuthDbContext, AuthDbContext>();
         services.AddDbContext<AuthDbContext>(options => 
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
