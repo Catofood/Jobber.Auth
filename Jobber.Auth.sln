@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Infrastructure", "src\Jobber.Auth.Infrastructure\Jobber.Auth.Infrastructure.csproj", "{03366A60-3AC4-4B00-B7CB-005E188AD6B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobber.Auth.Tests.Unit", "tests\Jobber.Auth.Tests.Unit\Jobber.Auth.Tests.Unit.csproj", "{10AE8467-4D63-4A29-B1BE-FD4C2B840A5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03366A60-3AC4-4B00-B7CB-005E188AD6B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10AE8467-4D63-4A29-B1BE-FD4C2B840A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10AE8467-4D63-4A29-B1BE-FD4C2B840A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10AE8467-4D63-4A29-B1BE-FD4C2B840A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10AE8467-4D63-4A29-B1BE-FD4C2B840A5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
