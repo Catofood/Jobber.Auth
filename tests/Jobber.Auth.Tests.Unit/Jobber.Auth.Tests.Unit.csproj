@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Bogus" Version="35.6.3" />
+      <PackageReference Include="FluentAssertions" Version="8.4.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+      <PackageReference Include="xunit" Version="2.9.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Jobber.Auth.Api\Jobber.Auth.Api.csproj" />
+      <ProjectReference Include="..\..\src\Jobber.Auth.Application\Jobber.Auth.Application.csproj" />
+      <ProjectReference Include="..\..\src\Jobber.Auth.Domain\Jobber.Auth.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Jobber.Auth.Infrastructure\Jobber.Auth.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
