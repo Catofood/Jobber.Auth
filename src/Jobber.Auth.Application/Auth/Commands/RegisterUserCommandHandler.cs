@@ -20,11 +20,10 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
 
     public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
-        if (await _userRepository.IsEmailConfirmed(command.Email, cancellationToken))
+        if (await _userRepository.IsEmailRegistered(command.Email, cancellationToken))
         {
             throw new EmailAlreadyRegisteredException(command.Email);
         }
-
         var newUserEntity = new User()
         {
             Email = command.Email.ToLowerInvariant(),

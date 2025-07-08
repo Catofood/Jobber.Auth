@@ -13,7 +13,7 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<bool> IsEmailConfirmed(string email, CancellationToken cancellationToken)
+    public async Task<bool> IsEmailRegistered(string email, CancellationToken cancellationToken)
     {
         return await _dbContext.Users.AnyAsync(x => x.Email == email, cancellationToken: cancellationToken);
     }

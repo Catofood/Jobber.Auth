@@ -5,6 +5,6 @@ namespace Jobber.Auth.Application.Interfaces;
 
 public interface IUserRepository
 {
-    Task<bool> IsEmailConfirmed(string email, CancellationToken cancellationToken);
+    Task<bool> IsEmailRegistered(string email, CancellationToken cancellationToken);
     Task AddUser(User user, CancellationToken cancellationToken);
 }
