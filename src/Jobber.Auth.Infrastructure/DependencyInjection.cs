@@ -1,5 +1,7 @@
 using System.Reflection;
 using Jobber.Auth.Application.Interfaces;
+using Jobber.Auth.Infrastructure.Persistence;
+using Jobber.Auth.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +15,8 @@ public static class DependencyInjection
     {
         // var thisAssembly = Assembly.GetExecutingAssembly();
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
-        services.AddScoped<IAuthDbContext, AuthDbContext>();
-        services.AddDbContext<AuthDbContext>(options => 
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddDbContext<UserDbContext>(options => 
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
         return services;
     }

@@ -6,14 +6,16 @@ namespace Jobber.Auth.Application.Auth.Commands;
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {
     private const string PasswordRegex =
-        @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{}|\\:;"",.<>/?]).{8,}$";
+        @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).{8,}$";
+
+    private const string EmailRegex = @"^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_'+\-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$";
 
     public RegisterUserCommandValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
             .NotNull().WithMessage("Email must not be null.")
-            .EmailAddress().WithMessage("Email format is invalid.");
+            .Matches(EmailRegex).WithMessage("Email format is invalid.");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required.")

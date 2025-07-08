@@ -1,0 +1,16 @@
+volumes:
+  pgdata:
+
+services:
+  jobber.auth.database:
+    image: postgres:17.5-alpine
+    container_name: jobber.auth.database
+    environment:
+      POSTGRES_DB: jobber.auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped

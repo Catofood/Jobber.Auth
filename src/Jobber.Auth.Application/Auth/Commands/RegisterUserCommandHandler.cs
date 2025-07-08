@@ -9,18 +9,18 @@ namespace Jobber.Auth.Application.Auth.Commands;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
 {
-    private readonly IAuthDbContext _dbContext;
+    private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
 
-    public RegisterUserCommandHandler(IAuthDbContext dbContext, IPasswordHasher passwordHasher)
+    public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
     {
-        _dbContext = dbContext;
+        _userRepository = userRepository;
         _passwordHasher = passwordHasher;
     }
 
     public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
-        if (await _dbContext.Users.AnyAsync(x => x.Email == command.Email, cancellationToken: cancellationToken))
+        if (await _userRepository.IsEmailConfirmed(command.Email, cancellationToken))
         {
             throw new EmailAlreadyRegisteredException(command.Email);
         }
@@ -31,8 +31,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
             PasswordHash = _passwordHasher.HashPassword(command.Password),
             IsEmailConfirmed = false,
         };
-        await _dbContext.Users.AddAsync(newUserEntity, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _userRepository.AddUser(newUserEntity, cancellationToken);
         // TODO: Добавить реализацию подтверждения создания аккаунта с помощью почты
         // Либо чтобы нужно было перейти по ссылке, либо чтобы нужно было ввести код в течение n часов
         // Нужно использовать для этого SMTP клиент
