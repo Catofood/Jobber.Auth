@@ -6,15 +6,19 @@ namespace Jobber.Auth.Domain.Entities;
 public class User
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("id")]
-    public Guid Id { get; set; }
+    public Guid Id { get; private set; }
     
     [Column("email")]
-    public string Email { get; set; }
+    [Required]
+    public required string Email { get; set; }
     
     [Column("password_hash")]
-    public string PasswordHash { get; set; }
+    [Required]
+    public required string PasswordHash { get; set; }
     
     [Column("is_email_confirmed")]
-    public bool IsEmailConfirmed { get; set; }
+    [Required]
+    public required bool IsEmailConfirmed { get; set; }
 }

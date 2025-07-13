@@ -1,4 +1,4 @@
-namespace Jobber.Auth.Application.Interfaces;
+namespace Jobber.Auth.Application.Contracts;
 
 public interface IEmailConfirmationService
 {

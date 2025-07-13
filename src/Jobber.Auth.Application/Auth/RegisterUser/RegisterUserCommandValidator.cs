@@ -1,7 +1,6 @@
-using System.Text.RegularExpressions;
 using FluentValidation;
 
-namespace Jobber.Auth.Application.Auth.Commands;
+namespace Jobber.Auth.Application.Auth.RegisterUser;
 
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {

@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Jobber.Auth.Application.Interfaces;
+using Jobber.Auth.Application.Contracts;
 using Jobber.Auth.Infrastructure;
 using Jobber.Auth.Infrastructure.Authentication;
 using Xunit.Abstractions;

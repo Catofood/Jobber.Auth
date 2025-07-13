@@ -1,10 +1,8 @@
 using System.Text;
 using Api.Extensions;
 using Api.Options;
-using Jobber.Auth.Application.Interfaces;
 using Jobber.Auth.Infrastructure.Authentication;
 using Jobber.Auth.Infrastructure.Persistence;
-using Jobber.Auth.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,7 +37,7 @@ public static class DependencyInjection
                         context.Token = context.Request.Cookies[cookieOptions.AccessTokenCookieName];
                         return Task.CompletedTask;
                     }
-                };
+                };  
             });
         services.AddAuthorization();
 

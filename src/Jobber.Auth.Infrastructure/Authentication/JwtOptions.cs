@@ -4,6 +4,6 @@ public class JwtOptions
 {
     public const string ConfigurationSectionName = "JwtOptions";
     
-    public string SecretKey { get; set; }
-    public int ExpiresMinutes { get; set; }
+    public required string SecretKey { get; init; }
+    public required int ExpiresMinutes { get; init; }
 }

@@ -1,5 +1,7 @@
 using Api.Options;
-using Jobber.Auth.Application.Auth.Commands;
+using Jobber.Auth.Application.Auth.LoginUser;
+using Jobber.Auth.Application.Auth.RegisterUser;
+using Jobber.Auth.Application.Auth.UpdateAuthTokens;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +22,27 @@ public class AuthController : ControllerBase
         _apiCookieOptions = cookieOptions.Value;
     }
 
-    
-    [HttpPost("register-user")]
+    [AllowAnonymous]
+    [HttpPost("registration")]
     public async Task<IActionResult> RegisterUser(
         [FromBody] RegisterUserCommand command,
         CancellationToken cancellationToken)
     {
-        var jwtToken = await _mediator.Send(command, cancellationToken);
-        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, jwtToken);
+        var tokens = await _mediator.Send(command, cancellationToken);
+        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, tokens.AccessToken);
+        Response.Cookies.Append(_apiCookieOptions.RefreshTokenCookieName, tokens.RefreshToken.Token);
+        return Ok();
+    }
+
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(
+        [FromBody] LoginUserCommand command, 
+        CancellationToken cancellationToken)
+    {
+        var tokens = await _mediator.Send(command, cancellationToken);
+        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, tokens.AccessToken);
+        Response.Cookies.Append(_apiCookieOptions.RefreshTokenCookieName, tokens.RefreshToken.Token);
         return Ok();
     }
 
@@ -45,6 +60,28 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Test(CancellationToken cancellationToken)
     {
         return Ok("Hello World!");
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    [AllowAnonymous]
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
+    {
+        var command = new UpdateAuthTokensCommand
+        {
+            // ! because there's middleware check for null
+            RefreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName]!,
+        };
+        var tokens = await _mediator.Send(command, cancellationToken);
+        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, tokens.AccessToken);
+        Response.Cookies.Append(_apiCookieOptions.RefreshTokenCookieName, tokens.RefreshToken.Token);
+        return Ok();
     }
 
 }
