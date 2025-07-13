@@ -1,7 +1,9 @@
+using Api.Options;
 using Jobber.Auth.Application.Auth.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Api.Controllers;
 
@@ -10,10 +12,12 @@ namespace Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ApiCookieOptions _apiCookieOptions;
 
-    public AuthController(IMediator mediator)
+    public AuthController(IMediator mediator, IOptions<ApiCookieOptions> cookieOptions)
     {
         _mediator = mediator;
+        _apiCookieOptions = cookieOptions.Value;
     }
 
     
@@ -23,7 +27,7 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         var jwtToken = await _mediator.Send(command, cancellationToken);
-        Response.Cookies.Append("token", jwtToken);
+        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, jwtToken);
         return Ok();
     }
 
@@ -38,7 +42,7 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPost("test")]
-    public IActionResult Test(CancellationToken cancellationToken)
+    public async Task<IActionResult> Test(CancellationToken cancellationToken)
     {
         return Ok("Hello World!");
     }
