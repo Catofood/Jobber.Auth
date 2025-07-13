@@ -1,8 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
 using Jobber.Auth.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using ApplicationException = Jobber.Auth.Application.Exceptions.ApplicationException;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Api.Middleware;
 
@@ -23,7 +22,7 @@ public class ExceptionHandlingMiddleware
         {
             await _next(httpContext);
         }
-        catch (ApplicationException ex)
+        catch (Exception ex) when (ex is ApplicationException || ex is ValidationException)
         {
             _logger.LogWarning(ex, "Handled application exception");
             httpContext.Response.ContentType = "application/json";

@@ -1,5 +1,6 @@
 using Jobber.Auth.Application.Auth.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -15,13 +16,15 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
+    
     [HttpPost("register-user")]
     public async Task<IActionResult> RegisterUser(
-        [FromBody] RegisterUserCommand command, 
+        [FromBody] RegisterUserCommand command,
         CancellationToken cancellationToken)
     {
-        var id = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(null, new { id }, new { id });
+        var jwtToken = await _mediator.Send(command, cancellationToken);
+        Response.Cookies.Append("token", jwtToken);
+        return Ok();
     }
 
     [HttpPost("confirm-email")]
@@ -32,4 +35,12 @@ public class AuthController : ControllerBase
     {
         throw new NotImplementedException();
     }
+
+    [Authorize]
+    [HttpPost("test")]
+    public IActionResult Test(CancellationToken cancellationToken)
+    {
+        return Ok("Hello World!");
+    }
+
 }

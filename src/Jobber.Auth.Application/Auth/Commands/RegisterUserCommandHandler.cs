@@ -7,18 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Jobber.Auth.Application.Auth.Commands;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IJwtProvider _jwtProvider;
 
-    public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _jwtProvider = jwtProvider;
     }
 
-    public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+    public async Task<string> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
         if (await _userRepository.IsEmailRegistered(command.Email, cancellationToken))
         {
@@ -35,6 +37,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
         // Либо чтобы нужно было перейти по ссылке, либо чтобы нужно было ввести код в течение n часов
         // Нужно использовать для этого SMTP клиент
         // Мб добавить ещё капчу
-        return newUserEntity.Id;
+        var token = _jwtProvider.GenerateToken(newUserEntity.Id);
+        return token;
     }
 }

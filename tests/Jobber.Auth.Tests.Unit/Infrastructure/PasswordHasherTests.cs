@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Jobber.Auth.Application.Interfaces;
 using Jobber.Auth.Infrastructure;
+using Jobber.Auth.Infrastructure.Authentication;
 using Xunit.Abstractions;
 
 namespace Jobber.Auth.Tests.Unit.Infrastructure;
