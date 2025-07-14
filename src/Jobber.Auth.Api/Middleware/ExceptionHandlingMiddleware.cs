@@ -1,4 +1,5 @@
 using Jobber.Auth.Application.Exceptions;
+using Jobber.Auth.Application.Exceptions.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using ApplicationException = Jobber.Auth.Application.Exceptions.ApplicationException;
 using ValidationException = FluentValidation.ValidationException;

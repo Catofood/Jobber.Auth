@@ -1,3 +1,4 @@
+using System.Text;
 using Api.Options;
 using Jobber.Auth.Infrastructure.Authentication;
 
@@ -23,7 +24,6 @@ public static class ConfigurationExtensions
 
         if (options is null)
             throw new InvalidOperationException($"Section '{ApiCookieOptions.ConfigurationSectionName}' is missing or invalid.");
-
         return options;
     }
 }

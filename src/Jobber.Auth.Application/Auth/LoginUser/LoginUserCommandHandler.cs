@@ -2,6 +2,7 @@ using Jobber.Auth.Application.Auth.Dto;
 using Jobber.Auth.Application.Auth.Services;
 using Jobber.Auth.Application.Contracts;
 using Jobber.Auth.Application.Exceptions;
+using Jobber.Auth.Application.Exceptions.Authentication;
 using MediatR;
 
 namespace Jobber.Auth.Application.Auth.LoginUser;
