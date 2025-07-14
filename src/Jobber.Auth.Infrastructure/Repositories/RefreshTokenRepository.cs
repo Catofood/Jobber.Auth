@@ -21,23 +21,23 @@ public class RefreshTokenRepository(AuthDbContext dbContext) : IRefreshTokenRepo
                 .FirstOrDefaultAsync(x => x.Token == token,cancellationToken: cancellationToken);
         return tokenEntity;
     }
-    public async Task RevokeOldestActiveByUserIfLimitIsExceeded(Guid userId, int maxAllowed, CancellationToken cancellationToken)
+    public async Task RevokeOldestActiveByUserIfLimitIsExceeded(
+        Guid userId, 
+        int maxAllowed, 
+        CancellationToken cancellationToken)
     {
-        var activeTokensCount = await _dbContext
-            .RefreshTokens
-            .CountAsync(x => x.UserId == userId && x.IsActive, cancellationToken);
-        if (activeTokensCount >= maxAllowed)
-        {
-            var tokensToRevoke = _dbContext
-                .RefreshTokens
-                .Where(x => x.UserId == userId && x.IsActive)
-                .OrderBy(x => x.IssuedAt)
-                .Take(activeTokensCount - maxAllowed + 1)
-                .ExecuteUpdateAsync(property => 
-                    property.SetProperty(x => x.IsRevoked, true), cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
+        var tokensToRevokeQuery = _dbContext.RefreshTokens
+            .Where(x => x.UserId == userId && !x.IsRevoked && x.ExpiresAt > DateTimeOffset.UtcNow)
+            .OrderBy(x => x.IssuedAt)
+            .Select(x => x.Id)
+            .Skip(maxAllowed - 1);
+
+        await _dbContext.RefreshTokens
+            .Where(x => tokensToRevokeQuery.Contains(x.Id))
+            .ExecuteUpdateAsync(setters =>
+                setters.SetProperty(x => x.IsRevoked, true), cancellationToken);
     }
+
 
     public async Task Update(RefreshToken tokenEntity, CancellationToken cancellationToken)
     {

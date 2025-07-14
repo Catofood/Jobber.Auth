@@ -30,7 +30,7 @@ public class RegisterUserCommandHandler(
             PasswordHash = _passwordHasher.HashPassword(command.Password),
             IsEmailConfirmed = false,
         };
-        
+        await _userRepository.AddUser(userEntity, cancellationToken);
         var tokens = await _authTokensFacade.CreateAndRegisterTokens(userEntity.Id, cancellationToken);
         return tokens;
     }

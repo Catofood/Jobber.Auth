@@ -53,6 +53,7 @@ public class AuthController : ControllerBase
         [FromQuery] string confirmationToken, 
         CancellationToken cancellationToken)
     {
+        // TODO: Реализовать систему подтверждения почты через SMTP сервис
         throw new NotImplementedException();
     }
 

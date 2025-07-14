@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.Decorate<IRefreshTokenRepository, RefreshTokenRepositoryDecorator>();
         services.AddTransient<IRefreshTokenProvider, RefreshTokenProvider>();
         services.AddDbContext<AuthDbContext>(options => 
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
