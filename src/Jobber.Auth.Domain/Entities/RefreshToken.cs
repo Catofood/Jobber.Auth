@@ -21,6 +21,6 @@ public class RefreshToken
     [Column("is_revoked")]
     public required bool IsRevoked { get; set; } = false;
     
-    public bool IsActive => !IsRevoked && ExpiresAt > DateTime.UtcNow;
+    public bool IsActive => !IsRevoked && ExpiresAt > DateTimeOffset.UtcNow;
 
 }

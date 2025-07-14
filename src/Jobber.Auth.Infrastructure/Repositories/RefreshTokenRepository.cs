@@ -21,6 +21,23 @@ public class RefreshTokenRepository(AuthDbContext dbContext) : IRefreshTokenRepo
                 .FirstOrDefaultAsync(x => x.Token == token,cancellationToken: cancellationToken);
         return tokenEntity;
     }
+    public async Task RevokeOldestActiveByUserIfLimitIsExceeded(Guid userId, int maxAllowed, CancellationToken cancellationToken)
+    {
+        var activeTokensCount = await _dbContext
+            .RefreshTokens
+            .CountAsync(x => x.UserId == userId && x.IsActive, cancellationToken);
+        if (activeTokensCount >= maxAllowed)
+        {
+            var tokensToRevoke = _dbContext
+                .RefreshTokens
+                .Where(x => x.UserId == userId && x.IsActive)
+                .OrderBy(x => x.IssuedAt)
+                .Take(activeTokensCount - maxAllowed + 1)
+                .ExecuteUpdateAsync(property => 
+                    property.SetProperty(x => x.IsRevoked, true), cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
 
     public async Task Update(RefreshToken tokenEntity, CancellationToken cancellationToken)
     {

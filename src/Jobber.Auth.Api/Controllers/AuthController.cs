@@ -1,8 +1,11 @@
+using Api.Extensions;
 using Api.Options;
 using Jobber.Auth.Application.Auth.LoginUser;
+using Jobber.Auth.Application.Auth.Logout;
 using Jobber.Auth.Application.Auth.RegisterUser;
 using Jobber.Auth.Application.Auth.UpdateAuthTokens;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -29,8 +32,7 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         var tokens = await _mediator.Send(command, cancellationToken);
-        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, tokens.AccessToken);
-        Response.Cookies.Append(_apiCookieOptions.RefreshTokenCookieName, tokens.RefreshToken.Token);
+        Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);
         return Ok();
     }
 
@@ -41,8 +43,7 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         var tokens = await _mediator.Send(command, cancellationToken);
-        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, tokens.AccessToken);
-        Response.Cookies.Append(_apiCookieOptions.RefreshTokenCookieName, tokens.RefreshToken.Token);
+        Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);
         return Ok();
     }
 
@@ -66,7 +67,18 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var refreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName];
+        if (refreshToken is not null)
+        {
+            var command = new LogoutCommand
+            {
+                RefreshToken = refreshToken
+            };
+            await _mediator.Send(command, cancellationToken);
+            Response.Cookies.Delete(_apiCookieOptions.RefreshTokenCookieName);
+        }
+        Response.Cookies.Delete(_apiCookieOptions.AccessTokenCookieName);
+        return Ok();
     }
 
     [AllowAnonymous]
@@ -79,9 +91,7 @@ public class AuthController : ControllerBase
             RefreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName]!,
         };
         var tokens = await _mediator.Send(command, cancellationToken);
-        Response.Cookies.Append(_apiCookieOptions.AccessTokenCookieName, tokens.AccessToken);
-        Response.Cookies.Append(_apiCookieOptions.RefreshTokenCookieName, tokens.RefreshToken.Token);
+        Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);
         return Ok();
     }
-
 }

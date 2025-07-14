@@ -20,8 +20,4 @@
       <ProjectReference Include="..\Jobber.Auth.Domain\Jobber.Auth.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Auth\Commands\" />
-    </ItemGroup>
-
 </Project>

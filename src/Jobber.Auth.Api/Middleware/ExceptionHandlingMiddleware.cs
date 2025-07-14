@@ -55,7 +55,7 @@ public class ExceptionHandlingMiddleware
         {
             EmailIsNotRegisteredException => StatusCodes.Status401Unauthorized,
             EmailAlreadyRegisteredException => StatusCodes.Status409Conflict,
-            InvalidPasswordException => StatusCodes.Status401Unauthorized,
+            AuthenticationException => StatusCodes.Status401Unauthorized,
             ApplicationException => StatusCodes.Status400BadRequest,
             FluentValidation.ValidationException => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
