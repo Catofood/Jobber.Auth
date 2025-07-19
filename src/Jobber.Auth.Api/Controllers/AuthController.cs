@@ -57,14 +57,14 @@ public class AuthController : ControllerBase
         throw new NotImplementedException();
     }
 
-    [Authorize]
-    [HttpPost("test")]
-    public async Task<IActionResult> Test(CancellationToken cancellationToken)
-    {
-        return Ok("Hello World!");
-    }
-
-    [Authorize]
+    // [Authorize]
+    // [HttpPost("test")]
+    // public async Task<IActionResult> Test(CancellationToken cancellationToken)
+    // {
+    //     return Ok("Hello World!");
+    // }
+    
+    [Authorize(Roles = "Admin")]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
@@ -88,8 +88,7 @@ public class AuthController : ControllerBase
     {
         var command = new UpdateAuthTokensCommand
         {
-            // ! because there's middleware check for null
-            RefreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName]!,
+            RefreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName],
         };
         var tokens = await _mediator.Send(command, cancellationToken);
         Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);

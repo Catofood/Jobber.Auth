@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using Api.Extensions;
 using Api.Options;
@@ -27,7 +28,7 @@ public static class DependencyInjection
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                    IssuerSigningKey = jwtOptions.GetPublicRsaKey()
                 };
 
                 options.Events = new JwtBearerEvents

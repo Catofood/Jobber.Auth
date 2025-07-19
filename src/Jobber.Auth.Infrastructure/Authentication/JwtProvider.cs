@@ -16,13 +16,9 @@ public class JwtProvider(IOptions<JwtOptions> jwtOptions) : IJwtProvider
         Claim[] claims = [
             new("userId", userId.ToString()),
         ];
-
-        var signingCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
-            SecurityAlgorithms.HmacSha256);
         
         var token = new JwtSecurityToken(
-            signingCredentials: signingCredentials,
+            signingCredentials: _jwtOptions.GetSigningCredentials(),
             expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiresMinutes),
             claims: claims);
         
