@@ -6,13 +6,13 @@ namespace Api.Extensions;
 
 public static class ConfigurationExtensions
 {
-    public static PublicKeyJwtOptions GetJwtPublicKeyOptions(this IConfiguration configuration)
+    public static PublicKeyOptions GetJwtPublicKeyOptions(this IConfiguration configuration)
     {
         var options = configuration
-            .Get<PublicKeyJwtOptions>();
+            .Get<PublicKeyOptions>();
 
         if (options is null)
-            throw new InvalidOperationException($"{nameof(PublicKeyJwtOptions)}' is missing or invalid.");
+            throw new InvalidOperationException($"{nameof(PublicKeyOptions)}' is missing or invalid.");
 
         return options;
     }

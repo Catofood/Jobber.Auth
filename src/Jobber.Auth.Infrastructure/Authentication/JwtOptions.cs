@@ -9,7 +9,6 @@ public class JwtOptions
     public const string ConfigurationSectionName = "JwtOptions"; // Do not rename, Configuration serialization
     
     public required string PrivateKey { get; init; } // Do not rename, Configuration serialization
-    public required string PublicKey { get; init; } // Do not rename, Configuration serialization
     public required int ExpiresMinutes { get; init; } // Do not rename, Configuration serialization
     
     public RsaSecurityKey GetPrivateRsaKey()
@@ -25,15 +24,5 @@ public class JwtOptions
     public SigningCredentials GetSigningCredentials()
     {
         return new SigningCredentials(GetPrivateRsaKey(), SecurityAlgorithms.RsaSha256);
-    }
-    
-    public RsaSecurityKey GetPublicRsaKey()
-    {
-        if (string.IsNullOrWhiteSpace(PublicKey))
-            throw new InvalidOperationException($"{nameof(JwtOptions)}: {nameof(PublicKey)} is null or empty.");
-        var rsa = RSA.Create();
-        rsa.ImportFromPem(PublicKey);
-        var signingKey = new RsaSecurityKey(rsa);
-        return signingKey;
     }
 }

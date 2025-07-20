@@ -1,6 +1,9 @@
 using Api.Extensions;
 using Api.Options;
+using Jobber.Auth.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+
 namespace Api;
 
 public static class DependencyInjection
@@ -9,40 +12,11 @@ public static class DependencyInjection
         this IServiceCollection services, 
         IConfiguration configuration)
     {
-        var publicKeyOptions = configuration.GetJwtPublicKeyOptions();
-        services.Configure<ApiCookieOptions>(configuration.GetSection(ApiCookieOptions.ConfigurationSectionName));
         var cookieOptions = configuration.GetCookieOptions();
+        services.Configure<ApiCookieOptions>(configuration.GetSection(ApiCookieOptions.ConfigurationSectionName));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            {
-                options.TokenValidationParameters = new()
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = publicKeyOptions.GetRsaSecurityKey()
-                };
-
-                options.Events = new JwtBearerEvents
-                {
-                    
-                    OnMessageReceived = context =>
-                    {
-                        var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
-                        if (!string.IsNullOrEmpty(authHeader) &&
-                            authHeader.StartsWith(JwtBearerDefaults.AuthenticationScheme + " "))
-                        {
-                            context.Token = authHeader[(JwtBearerDefaults.AuthenticationScheme.Length + 1)..];
-                        }
-                        else
-                        {
-                            context.Token = context.Request.Cookies[cookieOptions.AccessTokenCookieName];
-                        }
-                        return Task.CompletedTask;
-                    }
-                };  
-            });
+            .AddJwtBearer();
+        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
         services.AddAuthorization();
         services.AddControllers();
         services.AddOpenApi();

@@ -1,16 +1,16 @@
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Api.Options;
+namespace Jobber.Auth.Infrastructure.Authentication;
 
-public class PublicKeyJwtOptions
+public class PublicKeyOptions
 {
     public required string JwtPublicKey { get; init; } // Do not rename, Configuration serialization
     
     public RsaSecurityKey GetRsaSecurityKey()
     {
         if (string.IsNullOrWhiteSpace(JwtPublicKey))
-            throw new InvalidOperationException($"{nameof(PublicKeyJwtOptions)}: {nameof(JwtPublicKey)} is null or empty.");
+            throw new InvalidOperationException($"{nameof(PublicKeyOptions)}: {nameof(JwtPublicKey)} is null or empty.");
         var rsa = RSA.Create();
         rsa.ImportFromPem(JwtPublicKey);
         var signingKey = new RsaSecurityKey(rsa);
