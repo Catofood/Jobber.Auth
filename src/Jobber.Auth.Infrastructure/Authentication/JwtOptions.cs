@@ -11,8 +11,8 @@ public class JwtOptions
     public required string PrivateKey { get; init; } // Do not rename, Configuration serialization
     public required string PublicKey { get; init; } // Do not rename, Configuration serialization
     public required int ExpiresMinutes { get; init; } // Do not rename, Configuration serialization
-
-    private RsaSecurityKey GetPrivateRsaKey()
+    
+    public RsaSecurityKey GetPrivateRsaKey()
     {
         if (string.IsNullOrWhiteSpace(PrivateKey))
             throw new InvalidOperationException($"{nameof(JwtOptions)}: {nameof(PrivateKey)} is null or empty.");

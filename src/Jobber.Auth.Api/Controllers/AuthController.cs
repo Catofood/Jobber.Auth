@@ -14,16 +14,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOptions> cookieOptions)
+    : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ApiCookieOptions _apiCookieOptions;
-
-    public AuthController(IMediator mediator, IOptions<ApiCookieOptions> cookieOptions)
-    {
-        _mediator = mediator;
-        _apiCookieOptions = cookieOptions.Value;
-    }
+    private readonly IMediator _mediator = mediator;
+    private readonly ApiCookieOptions _apiCookieOptions = cookieOptions.Value;
 
     [AllowAnonymous]
     [HttpPost("registration")]
@@ -57,14 +52,14 @@ public class AuthController : ControllerBase
         throw new NotImplementedException();
     }
 
-    // [Authorize]
-    // [HttpPost("test")]
-    // public async Task<IActionResult> Test(CancellationToken cancellationToken)
-    // {
-    //     return Ok("Hello World!");
-    // }
+    [Authorize]
+    [HttpPost("test")]
+    public async Task<IActionResult> Test(CancellationToken cancellationToken)
+    {
+        return Ok("Hello World!");
+    }
     
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {

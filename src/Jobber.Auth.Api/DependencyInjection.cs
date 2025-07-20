@@ -1,13 +1,6 @@
-using System.Security.Cryptography;
-using System.Text;
 using Api.Extensions;
 using Api.Options;
-using Jobber.Auth.Infrastructure.Authentication;
-using Jobber.Auth.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-
 namespace Api;
 
 public static class DependencyInjection
@@ -16,7 +9,7 @@ public static class DependencyInjection
         this IServiceCollection services, 
         IConfiguration configuration)
     {
-        var jwtOptions = configuration.GetJwtOptions();
+        var publicKeyOptions = configuration.GetJwtPublicKeyOptions();
         services.Configure<ApiCookieOptions>(configuration.GetSection(ApiCookieOptions.ConfigurationSectionName));
         var cookieOptions = configuration.GetCookieOptions();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -28,19 +21,31 @@ public static class DependencyInjection
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = jwtOptions.GetPublicRsaKey()
+                    IssuerSigningKey = publicKeyOptions.GetRsaSecurityKey()
                 };
 
                 options.Events = new JwtBearerEvents
                 {
+                    
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies[cookieOptions.AccessTokenCookieName];
+                        var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(authHeader) &&
+                            authHeader.StartsWith(JwtBearerDefaults.AuthenticationScheme + " "))
+                        {
+                            context.Token = authHeader[(JwtBearerDefaults.AuthenticationScheme.Length + 1)..];
+                        }
+                        else
+                        {
+                            context.Token = context.Request.Cookies[cookieOptions.AccessTokenCookieName];
+                        }
                         return Task.CompletedTask;
                     }
                 };  
             });
         services.AddAuthorization();
+        services.AddControllers();
+        services.AddOpenApi();
 
         return services;
     }

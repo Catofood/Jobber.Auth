@@ -7,9 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Jobber.Auth.Infrastructure.Authentication;
 
-public class JwtProvider(IOptions<JwtOptions> jwtOptions) : IJwtProvider
+public class JwtProvider(IOptionsMonitor<JwtOptions> jwtOptions) : IJwtProvider
 {
-    private readonly JwtOptions _jwtOptions = jwtOptions.Value;
+    private readonly JwtOptions _jwtOptions = jwtOptions.CurrentValue;
 
     public string GenerateToken(Guid userId)
     {
