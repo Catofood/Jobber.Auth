@@ -1,5 +1,7 @@
 using Jobber.Auth.Application.Contracts;
 using Jobber.Auth.Infrastructure.Authentication;
+using Jobber.Auth.Infrastructure.Authentication.Options;
+using Jobber.Auth.Infrastructure.Authentication.Services;
 using Jobber.Auth.Infrastructure.Persistence;
 using Jobber.Auth.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +15,14 @@ public static class DependencyInjection
         this IServiceCollection services, 
         IConfiguration configuration)
     {
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.ConfigurationSectionName));
-        services.Configure<PublicKeyOptions>(configuration);
-        services.AddSingleton<IPublicKeyProvider, PublicKeyProvider>();
-        services.AddSingleton<IJwtProvider, JwtProvider>();
-        services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
+        services.Configure<PrivateKeyOptions>(configuration);
+        services.Configure<JwtOptions>(configuration);
+        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.Decorate<IRefreshTokenRepository, RefreshTokenRepositoryDecorator>();
-        services.AddTransient<IRefreshTokenProvider, RefreshTokenProvider>();
+        services.AddTransient<IRefreshTokenGenerator, RefreshTokenGenerator>();
         services.AddDbContext<AuthDbContext>(options => 
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
         return services;

@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using Jobber.Auth.Application.Contracts;
 
-namespace Jobber.Auth.Infrastructure.Authentication;
+namespace Jobber.Auth.Infrastructure.Authentication.Services;
 
-public class RefreshTokenProvider : IRefreshTokenProvider
+public class RefreshTokenGenerator : IRefreshTokenGenerator
 {
     public string GenerateToken()
     {

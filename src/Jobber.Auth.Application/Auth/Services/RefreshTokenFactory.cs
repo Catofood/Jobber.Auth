@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 namespace Jobber.Auth.Application.Auth.Services;
 
 public class RefreshTokenFactory(
-    IRefreshTokenProvider refreshTokenProvider, 
+    IRefreshTokenGenerator refreshTokenGenerator, 
     IOptions<RefreshTokenOptions> options) 
     : IRefreshTokenFactory
 {
-    private readonly IRefreshTokenProvider _refreshTokenProvider = refreshTokenProvider;
+    private readonly IRefreshTokenGenerator _refreshTokenGenerator = refreshTokenGenerator;
     private readonly RefreshTokenOptions _options = options.Value;
 
     public RefreshToken Create(Guid userId)
@@ -18,7 +18,7 @@ public class RefreshTokenFactory(
         var newToken = new RefreshToken
         {
             UserId = userId,
-            Token = _refreshTokenProvider.GenerateToken(),
+            Token = _refreshTokenGenerator.GenerateToken(),
             IssuedAt = DateTimeOffset.UtcNow,
             ExpiresAt = DateTimeOffset.UtcNow.AddDays(_options.ExpiresDays),
             IsRevoked = false

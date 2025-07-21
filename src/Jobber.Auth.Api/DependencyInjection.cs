@@ -1,6 +1,7 @@
-using Api.Extensions;
 using Api.Options;
+using Api.Services;
 using Jobber.Auth.Infrastructure.Authentication;
+using Jobber.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 
@@ -12,11 +13,10 @@ public static class DependencyInjection
         this IServiceCollection services, 
         IConfiguration configuration)
     {
-        var cookieOptions = configuration.GetCookieOptions();
-        services.Configure<ApiCookieOptions>(configuration.GetSection(ApiCookieOptions.ConfigurationSectionName));
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
-        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+        services.AddScoped<ICookieService, CookieService>();
+        services.Configure<RefreshTokenCookieOptions>(configuration);
+        services.AddJobberJwt(configuration);
+        services.AddAuthentication();
         services.AddAuthorization();
         services.AddControllers();
         services.AddOpenApi();

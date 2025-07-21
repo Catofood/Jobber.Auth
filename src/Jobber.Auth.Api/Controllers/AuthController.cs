@@ -1,11 +1,12 @@
-using Api.Extensions;
 using Api.Options;
+using Api.Services;
 using Jobber.Auth.Application.Auth.LoginUser;
 using Jobber.Auth.Application.Auth.Logout;
 using Jobber.Auth.Application.Auth.RegisterUser;
 using Jobber.Auth.Application.Auth.UpdateAuthTokens;
+using Jobber.Jwt.Options;
+using Jobber.Jwt.Services;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,11 +15,16 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOptions> cookieOptions)
+public class AuthController(IMediator mediator, 
+    IOptionsSnapshot<RefreshTokenCookieOptions> cookieOptions, 
+    ICookieService cookieService,
+    IOptionsSnapshot<AccessTokenCookieOptions> accessTokenCookieOptions)
     : ControllerBase
 {
+    private readonly ICookieService _cookieService = cookieService;
     private readonly IMediator _mediator = mediator;
-    private readonly ApiCookieOptions _apiCookieOptions = cookieOptions.Value;
+    private readonly RefreshTokenCookieOptions _refreshTokenCookieOptions = cookieOptions.Value;
+    private readonly AccessTokenCookieOptions _accessTokenCookieOptions = accessTokenCookieOptions.Value;
 
     [AllowAnonymous]
     [HttpPost("registration")]
@@ -27,7 +33,7 @@ public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOption
         CancellationToken cancellationToken)
     {
         var tokens = await _mediator.Send(command, cancellationToken);
-        Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);
+        _cookieService.AppendCookieAuthTokens(Response, tokens);
         return Ok();
     }
 
@@ -38,7 +44,7 @@ public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOption
         CancellationToken cancellationToken)
     {
         var tokens = await _mediator.Send(command, cancellationToken);
-        Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);
+        _cookieService.AppendCookieAuthTokens(Response, tokens);
         return Ok();
     }
 
@@ -51,7 +57,7 @@ public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOption
         // TODO: Реализовать систему подтверждения почты через SMTP сервис
         throw new NotImplementedException();
     }
-
+    
     [Authorize]
     [HttpPost("test")]
     public async Task<IActionResult> Test(CancellationToken cancellationToken)
@@ -63,7 +69,10 @@ public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOption
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        var refreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName];
+        var accessTokenCookieName = _accessTokenCookieOptions.AccessJwtTokenCookieName;
+        var refreshTokenCookieName = _refreshTokenCookieOptions.RefreshTokenCookieName;
+        
+        var refreshToken = Request.Cookies[refreshTokenCookieName];
         if (refreshToken is not null)
         {
             var command = new LogoutCommand
@@ -71,9 +80,9 @@ public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOption
                 RefreshToken = refreshToken
             };
             await _mediator.Send(command, cancellationToken);
-            Response.Cookies.Delete(_apiCookieOptions.RefreshTokenCookieName);
+            Response.Cookies.Delete(refreshTokenCookieName);
         }
-        Response.Cookies.Delete(_apiCookieOptions.AccessTokenCookieName);
+        Response.Cookies.Delete(accessTokenCookieName);
         return Ok();
     }
 
@@ -81,12 +90,13 @@ public class AuthController(IMediator mediator, IOptionsSnapshot<ApiCookieOption
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
     {
+        var refreshTokenCookieName = _refreshTokenCookieOptions.RefreshTokenCookieName;
         var command = new UpdateAuthTokensCommand
         {
-            RefreshToken = Request.Cookies[_apiCookieOptions.RefreshTokenCookieName],
+            RefreshToken = Request.Cookies[refreshTokenCookieName],
         };
         var tokens = await _mediator.Send(command, cancellationToken);
-        Response.AppendCookieAuthTokens(_apiCookieOptions, tokens);
+        _cookieService.AppendCookieAuthTokens(Response, tokens);
         return Ok();
     }
 }

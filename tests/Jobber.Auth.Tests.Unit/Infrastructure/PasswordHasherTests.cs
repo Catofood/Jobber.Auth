@@ -2,6 +2,7 @@
 using Jobber.Auth.Application.Contracts;
 using Jobber.Auth.Infrastructure;
 using Jobber.Auth.Infrastructure.Authentication;
+using Jobber.Auth.Infrastructure.Authentication.Services;
 using Xunit.Abstractions;
 
 namespace Jobber.Auth.Tests.Unit.Infrastructure;

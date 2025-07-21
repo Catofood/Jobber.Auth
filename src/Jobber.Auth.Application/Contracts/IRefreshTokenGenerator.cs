@@ -1,6 +1,6 @@
 namespace Jobber.Auth.Application.Contracts;
 
-public interface IRefreshTokenProvider
+public interface IRefreshTokenGenerator
 {
     string GenerateToken();
 }

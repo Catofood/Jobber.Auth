@@ -1,15 +1,18 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Jobber.Auth.Application.Contracts;
+using Jobber.Auth.Infrastructure.Authentication.Options;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
-namespace Jobber.Auth.Infrastructure.Authentication;
+namespace Jobber.Auth.Infrastructure.Authentication.Services;
 
-public class JwtProvider(IOptionsMonitor<JwtOptions> jwtOptions) : IJwtProvider
+public class JwtProvider(
+    IOptionsSnapshot<JwtOptions> jwtOptions, 
+    IOptionsSnapshot<PrivateKeyOptions> privateKeyOptions) 
+    : IJwtProvider
 {
-    private readonly JwtOptions _jwtOptions = jwtOptions.CurrentValue;
+    private readonly JwtOptions _jwtOptions = jwtOptions.Value;
+    private readonly PrivateKeyOptions _privateKeyOptions = privateKeyOptions.Value;
 
     public string GenerateToken(Guid userId)
     {
@@ -18,10 +21,9 @@ public class JwtProvider(IOptionsMonitor<JwtOptions> jwtOptions) : IJwtProvider
         ];
         
         var token = new JwtSecurityToken(
-            signingCredentials: _jwtOptions.GetSigningCredentials(),
+            signingCredentials: _privateKeyOptions.GetSigningCredentials(),
             expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiresMinutes),
             claims: claims);
-        
         var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
         
         return tokenValue;

@@ -1,6 +1,6 @@
 using Jobber.Auth.Application.Contracts;
 
-namespace Jobber.Auth.Infrastructure.Authentication;
+namespace Jobber.Auth.Infrastructure.Authentication.Services;
 
 public class BcryptPasswordHasher : IPasswordHasher
 {
