@@ -1,11 +1,12 @@
+using Api.Dto;
 using Api.Options;
 using Api.Services;
+using Jobber.Auth.Application.Auth.Dto;
 using Jobber.Auth.Application.Auth.LoginUser;
 using Jobber.Auth.Application.Auth.Logout;
 using Jobber.Auth.Application.Auth.RegisterUser;
 using Jobber.Auth.Application.Auth.UpdateAuthTokens;
 using Jobber.Jwt.Options;
-using Jobber.Jwt.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +30,14 @@ public class AuthController(IMediator mediator,
     [AllowAnonymous]
     [HttpPost("registration")]
     public async Task<IActionResult> RegisterUser(
-        [FromBody] RegisterUserCommand command,
+        [FromBody] RegisterUserRequestDto requestDto,
         CancellationToken cancellationToken)
     {
+        var command = new RegisterUserCommand()
+        {
+            Email = requestDto.Email,
+            Password = requestDto.Password,
+        };
         var tokens = await _mediator.Send(command, cancellationToken);
         _cookieService.AppendCookieAuthTokens(Response, tokens);
         return Ok();
@@ -40,18 +46,22 @@ public class AuthController(IMediator mediator,
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(
-        [FromBody] LoginUserCommand command, 
+        [FromBody] LoginUserRequestDto requestDto, 
         CancellationToken cancellationToken)
     {
+        var command = new LoginUserCommand()
+        {
+            Email = requestDto.Email,
+            Password = requestDto.Password, 
+        };
         var tokens = await _mediator.Send(command, cancellationToken);
         _cookieService.AppendCookieAuthTokens(Response, tokens);
         return Ok();
     }
 
-    [HttpPost("confirm-email")]
+    [HttpPost("email/confirm")]
     public async Task<IActionResult> ConfirmEmail(
-        [FromQuery] Guid userId, 
-        [FromQuery] string confirmationToken, 
+        [FromQuery] EmailConfirmDto dto, 
         CancellationToken cancellationToken)
     {
         // TODO: Реализовать систему подтверждения почты через SMTP сервис

@@ -18,7 +18,7 @@ public static class DependencyInjection
         services.AddJobberJwt(configuration);
         services.AddAuthentication();
         services.AddAuthorization();
-        services.AddControllers();
+        services.AddControllers().AddDataAnnotationsLocalization();
         services.AddOpenApi();
 
         return services;

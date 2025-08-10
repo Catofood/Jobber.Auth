@@ -1,6 +1,5 @@
 using Jobber.Auth.Application.Contracts;
 using Jobber.Auth.Domain.Entities;
-using Jobber.Auth.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jobber.Auth.Infrastructure.Repositories;

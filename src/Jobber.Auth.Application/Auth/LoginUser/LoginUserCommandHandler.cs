@@ -19,7 +19,7 @@ public class LoginUserCommandHandler(
 
     public async Task<AuthTokensDto> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
-        var userEntity = await _userRepository.GetUserByEmail(command.Email, cancellationToken);
+        var userEntity = await _userRepository.GetByEmail(command.Email, cancellationToken);
         if (userEntity is null) throw new EmailIsNotRegisteredException(command.Email);
         var userPasswordHash = userEntity.PasswordHash;
         var isPasswordCorrect = _passwordHasher.VerifyHashedPassword(userPasswordHash, command.Password);

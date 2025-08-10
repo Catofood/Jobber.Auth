@@ -2,7 +2,6 @@ using Jobber.Auth.Application.Contracts;
 using Jobber.Auth.Infrastructure.Authentication;
 using Jobber.Auth.Infrastructure.Authentication.Options;
 using Jobber.Auth.Infrastructure.Authentication.Services;
-using Jobber.Auth.Infrastructure.Persistence;
 using Jobber.Auth.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

@@ -6,7 +6,7 @@ namespace Jobber.Auth.Application.Auth.RegisterUser;
 // Returns access jwt token
 public record RegisterUserCommand : IRequest<AuthTokensDto>
 {
-    public string Email { get; set; } 
-    public string Password { get; set; }
+    public required string Email { get; init; } 
+    public required string Password { get; init; }
 }
      

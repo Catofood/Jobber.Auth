@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jobber.Auth.Domain.Entities;
 
+[Table("users")]
 public class User
 {
     [Key]
@@ -21,4 +22,7 @@ public class User
     [Column("is_email_confirmed")]
     [Required]
     public required bool IsEmailConfirmed { get; set; }
+    
+    [Column]
+    public string? EmailConfirmationToken { get; set; }
 }

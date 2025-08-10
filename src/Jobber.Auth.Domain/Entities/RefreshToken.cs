@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jobber.Auth.Domain.Entities;
 
+[Table("refresh_tokens")]
 public class RefreshToken
 {
     [Key]

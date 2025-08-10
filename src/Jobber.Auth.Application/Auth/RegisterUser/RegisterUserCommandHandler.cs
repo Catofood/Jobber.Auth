@@ -29,8 +29,9 @@ public class RegisterUserCommandHandler(
             Email = command.Email.ToLowerInvariant(),
             PasswordHash = _passwordHasher.HashPassword(command.Password),
             IsEmailConfirmed = false,
+            // EmailConfirmationToken = _confirmationTokenProvider.GenerateEmailConfirmationToken(),   
         };
-        await _userRepository.AddUser(userEntity, cancellationToken);
+        await _userRepository.Add(userEntity, cancellationToken);
         var tokens = await _authTokensFacade.CreateAndRegisterTokens(userEntity.Id, cancellationToken);
         return tokens;
     }

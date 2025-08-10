@@ -1,6 +1,5 @@
 using Jobber.Auth.Domain.Entities;
 using Jobber.Auth.Infrastructure;
-using Jobber.Auth.Infrastructure.Persistence;
 using Jobber.Auth.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
@@ -35,7 +34,7 @@ public class UserRepositoryTests
         };
         _testOutputHelper.WriteLine(user.Id.ToString());
         // Act
-        await repository.AddUser(user, CancellationToken.None);
+        await repository.Add(user, CancellationToken.None);
 
         // Assert
         _testOutputHelper.WriteLine(user.Id.ToString());
