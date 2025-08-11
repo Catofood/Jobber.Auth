@@ -19,6 +19,9 @@ public class ExceptionHandlingMiddleware
 
     public async Task Invoke(HttpContext httpContext)
     {
+        var traceId = httpContext.TraceIdentifier;
+        var instance = httpContext.Request.Path;
+        
         try
         {
             await _next(httpContext);
@@ -30,9 +33,11 @@ public class ExceptionHandlingMiddleware
             httpContext.Response.StatusCode = GetApplicationErrorStatusCode(ex);
             var problem = new ProblemDetails
             {
-                Status = httpContext.Response.StatusCode,
-                Title = ex.Message,
                 Type = ex.GetType().Name,
+                Title = ex.Message,
+                Status = httpContext.Response.StatusCode,
+                Extensions = { ["traceId"] = traceId },
+                Instance = instance,
             };
             await httpContext.Response.WriteAsJsonAsync(problem);
         }
@@ -46,6 +51,8 @@ public class ExceptionHandlingMiddleware
                 Title = "An unexpected error occurred",
                 Status = 500,
                 Type = "ServerError",
+                Extensions = { ["traceId"] = traceId },
+                Instance = instance,
             };
             await httpContext.Response.WriteAsJsonAsync(problem);
         }
